@@ -79,6 +79,10 @@ body {
   -webkit-transition: all .44s ease;
   -moz-transition: all .44s ease;
 }
+.google-auth{
+  color:  rgb(20, 23, 33);
+}
+
 .auth-button:hover { filter: brightness(145%); }
 
 .chat-wrapper {
