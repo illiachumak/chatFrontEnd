@@ -2,7 +2,7 @@ name: ec2_deploy_listener
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
     build:
