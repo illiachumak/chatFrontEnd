@@ -13,7 +13,7 @@ const onSubmit2 = (e) => {
       const { value } = e.target[1];
       const { value: secret } = e.target[2];
       axios.post(
-        "http://backend:3001/register",
+        "http://18.206.121.22:3001/register",
         { username: value, secret: secret, email: email}
       )
       .then(response => {
@@ -29,7 +29,7 @@ const onSubmit2 = (e) => {
       const { value } = e.target[0];
       const { value: secret } = e.target[1];
       axios.post(
-        "http://backend:3001/authenticate",
+        "http://18.206.121.22:3001/authenticate",
         { username: value, secret: secret}
       )
       .then(response => {
@@ -62,7 +62,7 @@ const onSubmit2 = (e) => {
 
               const { name } = decoded;
               axios.post(
-                "http://backend:3001/authenticate",
+                "http://18.206.121.22/authenticate",
                 { username: name}
               )
               .then(response => {
