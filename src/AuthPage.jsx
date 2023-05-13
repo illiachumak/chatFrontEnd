@@ -62,7 +62,7 @@ const onSubmit2 = (e) => {
 
               const { name } = decoded;
               axios.post(
-                "http://18.206.121.22/authenticate",
+                "http://18.206.121.22:3001/authenticate",
                 { username: name}
               )
               .then(response => {

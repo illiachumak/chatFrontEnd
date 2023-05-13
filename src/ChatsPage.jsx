@@ -3,7 +3,7 @@ const ChatsPage = (props) => {
     
 
     return (
-        d
+        <div>d</div>
 )
 }
 export default ChatsPage
