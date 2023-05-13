@@ -21,6 +21,6 @@ jobs:
           script: |
             cd chat/frontend
             git fetch --all
-            git reset --hard origin/main
-            git pull origin origin/main
+            git reset --hard origin/master
+            git pull origin origin/master
             docker compose up -d
