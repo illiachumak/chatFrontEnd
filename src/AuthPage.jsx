@@ -4,6 +4,7 @@ import jwt_decode from "jwt-decode";
 
 
 
+
 const AuthPage = (props) => {
 
 const onSubmit2 = (e) => {
@@ -12,7 +13,7 @@ const onSubmit2 = (e) => {
       const { value } = e.target[1];
       const { value: secret } = e.target[2];
       axios.post(
-        "http://localhost:3001/register",
+        "http://backend:3001/register",
         { username: value, secret: secret, email: email}
       )
       .then(response => {
@@ -28,7 +29,7 @@ const onSubmit2 = (e) => {
       const { value } = e.target[0];
       const { value: secret } = e.target[1];
       axios.post(
-        "http://localhost:3001/authenticate",
+        "http://backend:3001/authenticate",
         { username: value, secret: secret}
       )
       .then(response => {
@@ -61,7 +62,7 @@ const onSubmit2 = (e) => {
 
               const { name } = decoded;
               axios.post(
-                "http://localhost:3001/authenticate",
+                "http://backend:3001/authenticate",
                 { username: name}
               )
               .then(response => {
