@@ -13,28 +13,32 @@ const onSubmit2 = (e) => {
       const { value } = e.target[1];
       const { value: secret } = e.target[2];
       axios.post(
-        "http://18.206.121.22:3001/register",
+        `http://${ip}:3001/register`,
         { username: value, secret: secret, email: email}
       )
-      .then(response => {
-
-        return props.onAuth({...response.data, secret: secret})
-      })
       .catch(error => console.log("error", error))
     };
 
+    const ip = "3.229.243.238"
+    const lh = "localhost"
 
     const onSubmit = (e) => {
+      let roomId;
       e.preventDefault();
       const { value } = e.target[0];
       const { value: secret } = e.target[1];
+      const roomGetterFunc = async () => {
+       const roomId = await window.prompt("Enter Room Id", "roomId");
+      return({roomId})
+      }
+      roomGetterFunc();
       axios.post(
-        "http://18.206.121.22:3001/authenticate",
-        { username: value, secret: secret}
+        `http://${ip}:3001/authenticate`,
+        { username: value, secret: secret, roomId: roomId}
       )
       .then(response => {
 
-        return props.onAuth({...response.data, secret: secret})
+        return props.onAuth({...response.data, roomId: roomId})
       })
       .catch(error => console.log("error", error))
     };
@@ -62,7 +66,7 @@ const onSubmit2 = (e) => {
 
               const { name } = decoded;
               axios.post(
-                "http://18.206.121.22:3001/authenticate",
+                `http://${ip}:3001/authenticate`,
                 { username: name}
               )
               .then(response => {
