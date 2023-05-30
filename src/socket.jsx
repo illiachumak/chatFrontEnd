@@ -1,5 +1,11 @@
-import io from "socket.io-client" 
+import io from "socket.io-client";
 
-const socket = io('http://3.229.243.238:3001');
+const createSocketConnection = (user) => {
+  const socket = io("http://localhost:3001", {
+    query: { username: user.username, roomId: user.roomId },
+  });
 
-export default socket;
+  return socket;
+};
+
+export default createSocketConnection;

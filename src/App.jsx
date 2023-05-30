@@ -4,15 +4,22 @@ import "./App.css";
 
 import AuthPage from "./AuthPage";
 import ChatsPage from "./ChatsPage";
-// 861020334162-39ilfgk5i69av0cnor227usctffua56r.apps.googleusercontent.com client id
+
 function App() {
-  
   const [user, setUser] = useState(undefined);
+  const [id, setId] = useState(undefined);
+
+  const handleAuth = (user) => {
+    setUser(user);
+  };
+  const handleId = (id) => {
+    setId(id);
+  };
 
   if (!user) {
-    return <AuthPage onAuth={(user) => setUser(user)} />;
+    return <AuthPage onAuth={handleAuth} roomId = {handleId} />;
   } else {
-    return <ChatsPage user={user} />;
+    return <ChatsPage user={user} roomId={id}/>;
   }
 }
 
