@@ -3,8 +3,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import io from "socket.io-client";
 import "./ChatsPage.css";
-
-const socket = io("http://3.229.243.238:3001");
+//54.163.35.102
+const socket = io("http://localhost:3001");
 
 const ChatsPage = (props) => {
   const [message, setMessage] = useState("");

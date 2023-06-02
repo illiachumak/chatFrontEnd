@@ -18,7 +18,7 @@ const AuthPage = (props) => {
       .catch((error) => console.log("error", error));
   };
 
-  const ip = "3.229.243.238";
+  const ip = "54.163.35.102";
   const lh = "localhost";
 
   const onSubmit = async (e) => {
