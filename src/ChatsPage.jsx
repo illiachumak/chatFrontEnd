@@ -4,7 +4,7 @@ import axios from "axios";
 import io from "socket.io-client";
 import "./ChatsPage.css";
 //54.163.35.102
-const socket = io("http://localhost:3001");
+const socket = io("http://54.163.35.102:3001");
 
 const ChatsPage = (props) => {
   const [message, setMessage] = useState("");
