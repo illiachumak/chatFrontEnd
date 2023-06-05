@@ -4,7 +4,7 @@ import axios from "axios";
 import io from "socket.io-client";
 import "./ChatsPage.css";
 //54.163.35.102
-const socket = io("http://54.163.35.102:3001");
+const socket = io("http://localhost:3001");
 
 const ChatsPage = (props) => {
   const [message, setMessage] = useState("");
@@ -12,7 +12,7 @@ const ChatsPage = (props) => {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    socket.emit("USER:SET_USERNAME", props.user.username);
+    socket.emit("USER:SET_USERNAME", props.user);
     socket.emit("ROOM:JOIN", props.roomId);
 
     socket.on("ROOM:JOINED", (users) => {
@@ -28,13 +28,13 @@ const ChatsPage = (props) => {
       socket.off("ROOM:JOINED");
       socket.off("MESSAGE:RECEIVED");
     };
-  }, [props.user.username, props.roomId]);
+  }, [props.user, props.roomId]);
 
   const sendMessage = (e) => {
     e.preventDefault();
     if (message.trim() !== "") {
       const newMessage = {
-        username: props.user.username || "Unknown User",
+        username: props.user || "Unknown User",
         text: message,
       };
       socket.emit("MESSAGE:SEND", newMessage);
@@ -74,7 +74,7 @@ const ChatsPage = (props) => {
           {messages.map((message, index) => (
             <div
               key={index}
-              className={`message ${message.username === props.user.username ? "my-message" : ""}`}
+              className={`message ${message.username === props.user ? "my-message" : ""}`}
             >
              
                 <div className="user-avatar"></div>

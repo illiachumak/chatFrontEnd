@@ -3,19 +3,63 @@ import axios from "axios";
 import { GoogleLogin } from "@react-oauth/google";
 import jwt_decode from "jwt-decode";
 
+
+
+
+
+import { initializeApp } from "firebase/app";
+
+import { getDatabase, set, ref, update, onValue } from "firebase/database";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBkTOrTblEMljuWYGB4kmm93M3c-rfvkd8",
+  authDomain: "persprojauth555.firebaseapp.com",
+  databaseURL: "https://persprojauth555-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "persprojauth555",
+  storageBucket: "persprojauth555.appspot.com",
+  messagingSenderId: "861020334162",
+  appId: "1:861020334162:web:9697c67eff12d7a34f978b",
+  measurementId: "G-KSY7V626QR"
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = getDatabase(app);
+
 const AuthPage = (props) => {
   const onSubmit2 = (e) => {
     e.preventDefault();
     const { value: email } = e.target[0];
-    const { value } = e.target[1];
-    const { value: secret } = e.target[2];
-    axios
-      .post(`http://${ip}:3001/register`, {
-        username: value,
-        secret: secret,
-        email: email,
-      })
-      .catch((error) => console.log("error", error));
+    const { value: username } = e.target[1];
+    const { value: password } = e.target[2];
+  // axios
+  //  .post(`http://${lh}:3001/register`, {
+  //     username: value,
+  //     secret: secret,
+  //     email: email,
+  //   })
+  //   .catch((error) => console.log("error", error));
+
+      const auth = getAuth();
+createUserWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+    // Signed in 
+    const user = userCredential.user;
+    
+    set(ref(db, 'Users/' + user.uid),{
+      username: username,
+      email: email,
+    })
+    alert("User Created!");
+
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    alert(`Error ${errorMessage}`);
+  });
+
   };
 
   const ip = "54.163.35.102";
@@ -23,30 +67,59 @@ const AuthPage = (props) => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    const { value } = e.target[0];
-    const { value: secret } = e.target[1];
+    const { value: email } = e.target[0];
+    const { value: password } = e.target[1];
     let roomId = await window.prompt("Enter Room Id", "roomId");
 
-    axios
-      .post(`http://${ip}:3001/authenticate`, {
-        username: value,
-        secret: secret,
+  
+
+    const auth = getAuth();
+signInWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+    //signing in
+    const dt = new Date(); 
+    const user = userCredential.user;
+   
+    update(ref(db, 'Users/' + user.uid),{
+      last_login: dt,
+    })
+    alert("User logged in!");
+
+//reading username from db
+      const userId = auth.currentUser.uid;
+      onValue(ref(db, 'Users/' + userId), (snapshot) => {
+        const username = (snapshot.val() && snapshot.val().username) || 'Anonymous'
+        axios
+      .post(`http://${lh}:3001/authenticate`, {
+        username: username,
         roomId: roomId,
       })
-      .then((response) => {
-        const { data } = response;
-        const updatedData = { ...data, roomId, username: value };
-        if (updatedData && updatedData.roomId && updatedData.username) {
-          props.onAuth(updatedData);
+       .then((response) => {
+        console.log(response.data)
+        
+          props.onAuth(response.data);
           props.roomId(roomId);
-        } else {
-          throw new Error("Недійсні значення передані в onAuth.");
-        }
+       
       })
-      .catch((error) => {
-        console.log("error", error);
+       .catch((error) => {
+         console.log("error", error);
+       });
+
+
+      }, {
+        onlyOnce: true
       });
-  };
+     
+
+
+
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    alert(`Error ${errorMessage}`);
+  })
+};
 
   return (
     <div className="background">
@@ -63,20 +136,36 @@ const AuthPage = (props) => {
           </button>
         </div>
         <GoogleLogin
-          onSuccess={(credentialResponse) => {
-            let decoded = jwt_decode(credentialResponse.credential, {
+          onSuccess={ (credentialResponse) => {
+             let decoded =  jwt_decode(credentialResponse.credential, {
               header: false,
-            });
-            console.log(decoded);
-
+            })
+      
+          
             const { name } = decoded;
-            axios
-              .post(`http://${ip}:3001/authenticate`, { username: name })
+            axios.post(`http://${lh}:3001/authenticate-google`, { username: name,}).then(
+              (res) => {
+                const roomId =  window.prompt("Enter Room Id", "RoomId");
+                returnData = {
+                  username: res.data,
+                  roomId: roomId
+                }
+               
+                return returnData;
+              
+            }).then((returnData) => {
+
+              axios
+              .post(`http://${lh}:3001/authenticate`, {returnData})
               .then((response) => {
-                const secret = window.prompt("Enter Password", "Password");
-                return props.onAuth({ ...response.data, secret: secret });
-              })
-              .catch((error) => console.log("error", credentialResponse));
+              props.onAuth(response.data)
+              props.roomId(roomId);
+                
+              });
+             
+
+            })
+            
           }}
           onError={() => {
             console.log("Login Failed");
