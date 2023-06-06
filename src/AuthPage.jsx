@@ -10,7 +10,7 @@ import jwt_decode from "jwt-decode";
 import { initializeApp } from "firebase/app";
 
 import { getDatabase, set, ref, update, onValue } from "firebase/database";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup} from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBkTOrTblEMljuWYGB4kmm93M3c-rfvkd8",
@@ -24,24 +24,89 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-
 const db = getDatabase(app);
+const provider = new GoogleAuthProvider();
+const auth = getAuth();
+
 
 const AuthPage = (props) => {
+
+const onSubmitForm = (e) =>{
+  e.preventDefault();
+}
+
+  // Sign in with google
+  
+
+  const onClickGoogle = () => {
+    let username;
+    let roomId;
+    const getRoomId = async () => {
+      const roomId = await window.prompt("Enter Room Id", "RoomId");
+      return roomId
+      }
+
+    const signInGoogle = (roomId) =>{
+      signInWithPopup(auth, provider)
+      
+      .then((userCredential) => {
+        //signing in
+        const dt = new Date(); 
+        const user = userCredential.user;
+       
+        update(ref(db, 'Users/' + user.uid),{
+          last_login: dt,
+        })
+       
+    
+    //reading username from db
+          const userId = auth.currentUser.uid;
+          onValue(ref(db, 'Users/' + userId), (snapshot) => {
+            const username = (snapshot.val() && snapshot.val().username) || 'Anonymous'
+            
+            axios
+            .post(`http://${lh}:3001/authenticate`, {
+              username: username,
+              roomId: roomId,
+            })
+            .then((response) => {
+              console.log(response.data)
+              
+                props.onAuth(response.data);
+                props.roomId(roomId);
+             
+            })
+            .catch((error) => {
+               console.log("error", error);
+            });
+          }, {
+            onlyOnce: true
+          });
+          })
+          
+    
+    
+
+
+}
+
+          
+getRoomId().then(roomId => {
+ signInGoogle(roomId)
+});
+
+
+}
+
+/////////////////////////////////////////////
+  
   const onSubmit2 = (e) => {
     e.preventDefault();
     const { value: email } = e.target[0];
     const { value: username } = e.target[1];
     const { value: password } = e.target[2];
-  // axios
-  //  .post(`http://${lh}:3001/register`, {
-  //     username: value,
-  //     secret: secret,
-  //     email: email,
-  //   })
-  //   .catch((error) => console.log("error", error));
 
-      const auth = getAuth();
+     
 createUserWithEmailAndPassword(auth, email, password)
   .then((userCredential) => {
     // Signed in 
@@ -123,56 +188,24 @@ signInWithEmailAndPassword(auth, email, password)
 
   return (
     <div className="background">
-      <form onSubmit={onSubmit} className="form-card">
+      <div className="form-card">
+      <form onSubmit={onSubmit} >
         <div className="auth">
-          <div className="auth-label">Username</div>
-          <input className="auth-input" name="username" />
+          <div className="auth-label">Email</div>
+          <input className="auth-input" name="email" />
         </div>
         <div className="auth register">
           <div className="auth-label reg-label">Password</div>
           <input className="auth-input reg-input" name="secret" />
-          <button className="auth-button" type="submit">
+          <button className="auth-button" type="submit" >
             Enter
           </button>
         </div>
-        <GoogleLogin
-          onSuccess={ (credentialResponse) => {
-             let decoded =  jwt_decode(credentialResponse.credential, {
-              header: false,
-            })
-      
-          
-            const { name } = decoded;
-            axios.post(`http://${lh}:3001/authenticate-google`, { username: name,}).then(
-              (res) => {
-                const roomId =  window.prompt("Enter Room Id", "RoomId");
-                returnData = {
-                  username: res.data,
-                  roomId: roomId
-                }
-               
-                return returnData;
-              
-            }).then((returnData) => {
-
-              axios
-              .post(`http://${lh}:3001/authenticate`, {returnData})
-              .then((response) => {
-              props.onAuth(response.data)
-              props.roomId(roomId);
-                
-              });
-             
-
-            })
-            
-          }}
-          onError={() => {
-            console.log("Login Failed");
-          }}
-        />
+        
       </form>
-
+      
+      <button className="social-signin google" onClick={() => onClickGoogle()}>Sign in with Google</button>
+      </div>     
       <form onSubmit={onSubmit2} className="form-card">
         <div className="auth">
           <div className="auth-label">Email</div>
