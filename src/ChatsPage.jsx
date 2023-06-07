@@ -1,18 +1,17 @@
-
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import io from "socket.io-client";
 import "./ChatsPage.css";
-//54.163.35.102
+
 const socket = io("http://localhost:3001");
 
 const ChatsPage = (props) => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
-
+  
   useEffect(() => {
     socket.emit("USER:SET_USERNAME", props.user);
+    socket.emit("USER:SET_USERID", props.userId);
     socket.emit("ROOM:JOIN", props.roomId);
 
     socket.on("ROOM:JOINED", (users) => {
@@ -36,6 +35,7 @@ const ChatsPage = (props) => {
       const newMessage = {
         username: props.user || "Unknown User",
         text: message,
+        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       };
       socket.emit("MESSAGE:SEND", newMessage);
       setMessage("");
@@ -61,7 +61,7 @@ const ChatsPage = (props) => {
             <li key={user.username}>
               <div className="user-avatar"></div>
               <div className="user-info">
-                <span className="username">{user.username || "Unknown User"}</span>
+                <div className="username">{user.username || "Unknown User"}</div>
                 <span className={`status-indicator ${user.status}`}></span>
               </div>
             </li>
@@ -76,12 +76,11 @@ const ChatsPage = (props) => {
               key={index}
               className={`message ${message.username === props.user ? "my-message" : ""}`}
             >
-             
-                <div className="user-avatar"></div>
-            
-              <div className="message-content">
-                <span className="username">{message.username}: </span>
-                <span className="text">{message.text}</span>
+              <div className="user-avatar"></div>
+              <div className={`message-content ${message.username === props.user ? "my-message-content" : ""}`}>
+                <div className={` ${message.username === props.user ? "my-username" : "username"} `}>{message.username}</div>
+                <div className={` ${message.username === props.user ? "text my-text" : "text"} `}>{message.text}</div>
+                <div className={` ${message.username === props.user ? "my-message-timestamp" : "message-timestamp"} `}>{message.timestamp}</div>
               </div>
             </div>
           ))}

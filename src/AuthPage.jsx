@@ -27,7 +27,7 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const provider = new GoogleAuthProvider();
 const auth = getAuth();
-
+ 
 
 const AuthPage = (props) => {
 
@@ -51,11 +51,12 @@ const onSubmitForm = (e) =>{
       
       .then((userCredential) => {
         //signing in
-        const dt = new Date(); 
+        
         const user = userCredential.user;
        
         update(ref(db, 'Users/' + user.uid),{
-          last_login: dt,
+          login: 'connected',
+          
         })
        
     
@@ -68,12 +69,14 @@ const onSubmitForm = (e) =>{
             .post(`http://${lh}:3001/authenticate`, {
               username: username,
               roomId: roomId,
+              userId: userId,
             })
             .then((response) => {
               console.log(response.data)
               
                 props.onAuth(response.data);
                 props.roomId(roomId);
+                props.userID(user.uid)
              
             })
             .catch((error) => {
@@ -130,92 +133,101 @@ createUserWithEmailAndPassword(auth, email, password)
   const ip = "54.163.35.102";
   const lh = "localhost";
 
+
+///////////////////////////
+
+
+
   const onSubmit = async (e) => {
     e.preventDefault();
     const { value: email } = e.target[0];
     const { value: password } = e.target[1];
     let roomId = await window.prompt("Enter Room Id", "roomId");
-
+  
+    const auth = getAuth();
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signing in
+        const user = userCredential.user;
+  
+       
+  
+        
+  
+        // Reading username from db
+        onValue(ref(db, 'Users/' + user.uid), (snapshot) => {
+          const username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
+          const login = snapshot.val().login;
+          axios
+            .post(`http://${lh}:3001/authenticate`, {
+              username: username,
+              roomId: roomId,
+            })
+            .then((response) => {
+              
+              if (login !== 'connected') {
+                update(ref(db, 'Users/' + user.uid), {
+                  login: 'connected',
+                });
+                props.onAuth(response.data);
+                props.roomId(roomId);
+                props.userID(user.uid);
+              }
+              else{
+                alert("This User Has Been Already Connected!!!");
+              }
+            })
+            .catch((err) => {
+              console.log("error", err);
+            });
+        }, {
+          onlyOnce: true
+        });
+      })
+      .catch((err) => {
+        const errorCode = err.code;
+        const errorMessage = err.message;
+        alert(`Error ${errorMessage}`);
+        return; // Stop code execution here
+      });
+  };
+  
   
 
-    const auth = getAuth();
-signInWithEmailAndPassword(auth, email, password)
-  .then((userCredential) => {
-    //signing in
-    const dt = new Date(); 
-    const user = userCredential.user;
-   
-    update(ref(db, 'Users/' + user.uid),{
-      last_login: dt,
-    })
-    alert("User logged in!");
-
-//reading username from db
-      const userId = auth.currentUser.uid;
-      onValue(ref(db, 'Users/' + userId), (snapshot) => {
-        const username = (snapshot.val() && snapshot.val().username) || 'Anonymous'
-        axios
-      .post(`http://${lh}:3001/authenticate`, {
-        username: username,
-        roomId: roomId,
-      })
-       .then((response) => {
-        console.log(response.data)
-        
-          props.onAuth(response.data);
-          props.roomId(roomId);
-       
-      })
-       .catch((error) => {
-         console.log("error", error);
-       });
-
-
-      }, {
-        onlyOnce: true
-      });
-     
-
-
-
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    alert(`Error ${errorMessage}`);
-  })
-};
-
-  return (
-    <div className="background">
+return (
+  <div className="background">
+      <div className="form-container">
       <div className="form-card">
-      <form onSubmit={onSubmit} >
-        <div className="auth">
-          <div className="auth-label">Email</div>
-          <input className="auth-input" name="email" />
-        </div>
-        <div className="auth register">
-          <div className="auth-label reg-label">Password</div>
-          <input className="auth-input reg-input" name="secret" />
-          <button className="auth-button" type="submit" >
-            Enter
-          </button>
-        </div>
-        
-      </form>
-      
+      <div className="or-span login-span">Sign In</div>
+        <form onSubmit={onSubmit} >
+          <div className="auth">
+            <div className="auth-label">Email</div>
+            <input className="auth-input" name="email" />
+          </div>
+          <div className="auth ">
+            <div className="auth-label ">Password</div>
+            <input className="auth-input " name="secret" />
+            <button className="auth-button" type="submit" >
+              Enter
+            </button>
+          </div>
+          
+        </form>
+      <div className="or-span">OR</div>
       <button className="social-signin google" onClick={() => onClickGoogle()}>Sign in with Google</button>
-      </div>     
+      </div> 
+      
       <form onSubmit={onSubmit2} className="form-card">
-        <div className="auth">
+      <div className="or-span login-span">Sign Up</div>
+        <div className="auth reg">
           <div className="auth-label">Email</div>
           <input className="auth-input" name="email" />
         </div>
-        <div className="auth">
+        <div className="auth reg">
           <div className="auth-label">Username</div>
           <input className="auth-input" name="username" />
         </div>
-        <div className="auth register">
+        <div className="auth reg">
           <div className="auth-label reg-label">Password</div>
           <input className="auth-input reg-input" name="secret" />
           <button className="auth-button" type="submit">
@@ -223,7 +235,9 @@ signInWithEmailAndPassword(auth, email, password)
           </button>
         </div>
       </form>
-    </div>
+    </div> 
+    
+  </div>  
   );
 };
 

@@ -1,13 +1,14 @@
-/* ChatsPage.css */
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
 .chats-container {
   display: flex;
   height: 100vh;
 }
 
 .sidebar {
+                           
   flex: 1;
   padding: 20px;
-  background-color: #f2f2f2;
+  background-color: rgb(23, 23, 52);
 }
 
 .sidebar h3 {
@@ -33,7 +34,7 @@
   background-image: url("https://i.imgur.com/uomkVIL.png");
   background-size: cover;
   background-position: center;
-  margin-right: 10px;
+  margin: auto 10px auto 5px;
 }
 
 .user-info {
@@ -43,8 +44,18 @@
 
 .username {
   font-weight: bold;
+  font-family: "Roboto", sans-serif; 
   margin-bottom: 5px;
-  text-align: center;
+  text-align: left;
+  color: white;
+}
+
+.my-username {
+  font-weight: bold;
+  font-family: "Roboto", sans-serif; 
+  margin-bottom: 5px;
+  text-align: right;
+  color: white;
 }
 
 .status-indicator {
@@ -66,7 +77,7 @@
 .chat-area {
   flex: 4;
   padding: 20px;
-  background-color: #fff;
+  background-color: rgb(17, 17, 39);
   display: flex;
   flex-direction: column;
 }
@@ -81,10 +92,33 @@
   display: flex;
   align-items: flex-start;
   margin-bottom: 10px;
+  color: white;
+  
+}
+
+.message-content {
+  padding: 12px 15px;
+  background-color: rgb(37, 37, 78);
+  border-radius: 20px;
+  padding-right: 50px;
+  position: relative;
+  max-width: 200px;
+}
+h3{
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  font-family: "Roboto", sans-serif; 
+}
+.my-message-content {
+  padding-left: 50px;
+  padding-right: 15px;
 }
 
 .my-message {
-  flex-direction:row-reverse ;
+  flex-direction: row-reverse;
+  text-align: right;
+  
 }
 
 .message-container {
@@ -101,7 +135,32 @@
 .text {
   word-wrap: break-word;
   word-break: break-all;
-  text-align: center;
+  text-align: left;
+  font-family: "Roboto", sans-serif;
+  font-weight: 100; 
+}
+
+.my-text {
+  text-align: right;
+  font-weight: 100;
+  font-family: "Roboto", sans-serif; 
+}
+
+.message-timestamp {
+  position: absolute;
+  bottom: 10px;
+  right: 12px;
+  
+  font-size: 12px;
+  color: #aaa;
+}
+.my-message-timestamp{
+  position: absolute;
+  bottom: 10px;
+  
+  font-size: 12px;
+  color: #aaa;
+  left: 12px;
 }
 
 .message-input {
@@ -114,17 +173,25 @@
 .message-input input {
   flex: 1;
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid rgb(77, 77, 196);
+  background-color: rgb(17, 17, 39);
   border-radius: 4px;
   outline: none;
+  color:#fff;
 }
 
 .message-input button {
   padding: 10px 20px;
   margin-left: 10px;
-  background-color: #4caf50;
+  background-color: rgb(17, 17, 39);
+  border: 1px solid rgb(77, 77, 196);
   color: #fff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+ 
+}
+
+.message-input button:hover {
+  background-color: rgb(37, 37, 78);
 }
