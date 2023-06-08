@@ -7,10 +7,10 @@ export default defineConfig({
     port: 5173,
     https: true,
     hmr: {
-        host: "frontend.persprojchat.space",
-        port: 80,
-        protocol: "wss",
+      host: 'frontend.persprojchat.space',
+      port: 443,
+      protocol: 'wss',
     },
-},
+  },
   plugins: [react()],
 })
