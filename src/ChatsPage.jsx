@@ -8,13 +8,14 @@ const ChatsPage = (props) => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
-  
+  setInterval(console.log(users), 3000)
   useEffect(() => {
     socket.emit("USER:SET_USERNAME", props.user);
     socket.emit("USER:SET_USERID", props.userId);
     socket.emit("ROOM:JOIN", props.roomId);
 
     socket.on("ROOM:JOINED", (users) => {
+      
       setUsers(users);
     });
 
