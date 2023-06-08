@@ -1,10 +1,14 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vitejs.dev/config/
 export default defineConfig({
   server: {
-    host: true
+    host: 'frontend.persprojchat.space',
+    hmr: {
+      host: 'backend.persprojchat.space',
+      port: 443,
+      protocol: 'wss',
+    },
   },
   plugins: [react()],
 })
