@@ -15,7 +15,7 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, Go
 const firebaseConfig = {
   apiKey: "AIzaSyBkTOrTblEMljuWYGB4kmm93M3c-rfvkd8",
   authDomain: "persprojauth555.firebaseapp.com",
-  databaseURL: "httpss://persprojauth555-default-rtdb.europe-west1.firebasedatabase.app",
+  databaseURL: "https://persprojauth555-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "persprojauth555",
   storageBucket: "persprojauth555.appspot.com",
   messagingSenderId: "861020334162",
