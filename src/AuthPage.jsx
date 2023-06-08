@@ -66,7 +66,7 @@ const onSubmitForm = (e) =>{
             const username = (snapshot.val() && snapshot.val().username) || 'Anonymous'
             
             axios
-            .post(`http://${lh}:3001/authenticate`, {
+            .post(`http://${ip}/authenticate`, {
               username: username,
               roomId: roomId,
               userId: userId,
@@ -130,7 +130,7 @@ createUserWithEmailAndPassword(auth, email, password)
 
   };
 
-  const ip = "54.163.35.102";
+  const ip = "backend.persprojchat.space";
   const lh = "localhost";
 
 
@@ -159,7 +159,7 @@ createUserWithEmailAndPassword(auth, email, password)
           const username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
           const login = snapshot.val().login;
           axios
-            .post(`http://${lh}:3001/authenticate`, {
+            .post(`http://${ip}/authenticate`, {
               username: username,
               roomId: roomId,
             })

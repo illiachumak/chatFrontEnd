@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
 import "./ChatsPage.css";
 
-const socket = io("http://localhost:3001");
+const socket = io("http://backend.persprojchat.space");
 
 const ChatsPage = (props) => {
   const [message, setMessage] = useState("");
