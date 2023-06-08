@@ -8,6 +8,10 @@ export default defineConfig({
       '/api': {
         target: 'https://backend.persprojchat.space',
         changeOrigin: true,
+      },
+      '/ws': {
+        target: 'wss://backend.persprojchat.space',
+        changeOrigin: true,
         ws: true,
       },
     },
