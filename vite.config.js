@@ -1,13 +1,16 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { sveltekit } from '@sveltejs/kit/vite';
 
-// https://vitejs.dev/config/
 export default defineConfig({
   server: {
-    host: true
+    host: true,
+    hmr: {
+      clientPort: 80,
+    },
   },
-  plugins: [react()],
-})
+  plugins: [react(), sveltekit()],
+});
 
 
 
