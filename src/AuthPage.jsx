@@ -15,7 +15,7 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, Go
 const firebaseConfig = {
   apiKey: "AIzaSyBkTOrTblEMljuWYGB4kmm93M3c-rfvkd8",
   authDomain: "persprojauth555.firebaseapp.com",
-  databaseURL: "https://persprojauth555-default-rtdb.europe-west1.firebasedatabase.app",
+  databaseURL: "httpss://persprojauth555-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "persprojauth555",
   storageBucket: "persprojauth555.appspot.com",
   messagingSenderId: "861020334162",
@@ -66,7 +66,7 @@ const onSubmitForm = (e) =>{
             const username = (snapshot.val() && snapshot.val().username) || 'Anonymous'
             
             axios
-            .post(`http://${ip}/authenticate`, {
+            .post(`https://${ip}/authenticate`, {
               username: username,
               roomId: roomId,
               userId: userId,
@@ -159,7 +159,7 @@ createUserWithEmailAndPassword(auth, email, password)
           const username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
           const login = snapshot.val().login;
           axios
-            .post(`http://${ip}/authenticate`, {
+            .post(`https://${ip}/authenticate`, {
               username: username,
               roomId: roomId,
             })
