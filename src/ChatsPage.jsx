@@ -1,5 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
+import {
+  SpeechConfig,
+  SpeechRecognizer,
+  AudioConfig,
+} from "microsoft-cognitiveservices-speech-sdk";
 import "./ChatsPage.css";
 
 const socket = io("https://backend.persprojchat.space");
@@ -8,14 +13,15 @@ const ChatsPage = (props) => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
-  setInterval(console.log(users), 3000)
+  const [recognizer, setRecognizer] = useState(null);
+  const messagesEndRef = useRef(null);
+
   useEffect(() => {
     socket.emit("USER:SET_USERNAME", props.user);
     socket.emit("USER:SET_USERID", props.userId);
     socket.emit("ROOM:JOIN", props.roomId);
 
     socket.on("ROOM:JOINED", (users) => {
-      
       setUsers(users);
     });
 
@@ -30,28 +36,70 @@ const ChatsPage = (props) => {
     };
   }, [props.user, props.roomId]);
 
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+  };
+
   const sendMessage = (e) => {
     e.preventDefault();
+    if (recognizer) {
+      recognizer.stopContinuousRecognitionAsync(() => {
+        recognizer.close();
+        setRecognizer(null);
+      });
+    }
+
     if (message.trim() !== "") {
       const newMessage = {
         username: props.user || "Unknown User",
         text: message,
-        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        timestamp: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
       };
       socket.emit("MESSAGE:SEND", newMessage);
       setMessage("");
     }
   };
 
-  useEffect(() => {
-    socket.on("MESSAGE:SAVED", (message) => {
-      setMessages((prevMessages) => [...prevMessages, message]);
-    });
+  const handleSpeechRecognition = () => {
+    if (!recognizer) {
+      const speechConfig = SpeechConfig.fromSubscription(
+        "e148cba298894db0ba7d8c459ec3f892",
+        "eastus"
+      );
+      speechConfig.speechRecognitionLanguage = "en-US";
+      const audioConfig = AudioConfig.fromDefaultMicrophoneInput();
+      const newRecognizer = new SpeechRecognizer(speechConfig, audioConfig);
 
-    return () => {
-      socket.off("MESSAGE:SAVED");
-    };
-  }, []);
+      newRecognizer.recognizeOnceAsync(
+        (result) => {
+          setMessage(result.text);
+          newRecognizer.close();
+          setRecognizer(null);
+        },
+        (error) => {
+          console.error(error);
+          newRecognizer.close();
+          setRecognizer(null);
+        }
+      );
+
+      setRecognizer(newRecognizer);
+    } else {
+      recognizer.stopContinuousRecognitionAsync(() => {
+        recognizer.close();
+        setRecognizer(null);
+      });
+    }
+  };
+
+ 
 
   return (
     <div className="chats-container">
@@ -62,7 +110,9 @@ const ChatsPage = (props) => {
             <li key={user.username}>
               <div className="user-avatar"></div>
               <div className="user-info">
-                <div className="username">{user.username || "Unknown User"}</div>
+                <div className="username">
+                  {user.username || "Unknown User"}
+                </div>
                 <span className={`status-indicator ${user.status}`}></span>
               </div>
             </li>
@@ -75,16 +125,43 @@ const ChatsPage = (props) => {
           {messages.map((message, index) => (
             <div
               key={index}
-              className={`message ${message.username === props.user ? "my-message" : ""}`}
+              className={`message ${
+                message.username === props.user ? "my-message" : ""
+              }`}
             >
               <div className="user-avatar"></div>
-              <div className={`message-content ${message.username === props.user ? "my-message-content" : ""}`}>
-                <div className={` ${message.username === props.user ? "my-username" : "username"} `}>{message.username}</div>
-                <div className={` ${message.username === props.user ? "text my-text" : "text"} `}>{message.text}</div>
-                <div className={` ${message.username === props.user ? "my-message-timestamp" : "message-timestamp"} `}>{message.timestamp}</div>
+              <div
+                className={`message-content ${
+                  message.username === props.user ? "my-message-content" : ""
+                }`}
+              >
+                <div
+                  className={` ${
+                    message.username === props.user ? "my-username" : "username"
+                  } `}
+                >
+                  {message.username}
+                </div>
+                <div
+                  className={` ${
+                    message.username === props.user ? "text my-text" : "text"
+                  } `}
+                >
+                  {message.text}
+                </div>
+                <div
+                  className={` ${
+                    message.username === props.user
+                      ? "my-message-timestamp"
+                      : "message-timestamp"
+                  } `}
+                >
+                  {message.timestamp}
+                </div>
               </div>
             </div>
           ))}
+          <div ref={messagesEndRef} />
         </div>
         <form onSubmit={sendMessage} className="message-input">
           <input
@@ -93,7 +170,12 @@ const ChatsPage = (props) => {
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Enter message..."
           />
-          <button type="submit">Send</button>
+          <button
+            type="button"
+            onClick={handleSpeechRecognition}
+            className={`microphone-icon ${recognizer ? "active" : ""}`}
+          ></button>
+          <button type="submit" className="send-btn"></button>
         </form>
       </div>
     </div>
