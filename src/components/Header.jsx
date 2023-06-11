@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Header.css';
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, onValue } from "firebase/database";
+import { getDatabase, ref, onValue, update } from "firebase/database";
 import { firebaseConfig } from "../FirebaseConfig";
 import { getStorage, ref as REF, uploadBytes, getDownloadURL } from "firebase/storage";
 
@@ -17,18 +17,34 @@ const storage = getStorage(app);
 const Header = (props) => {
   const [profileHandler, setProfileHandler] = useState(false);
   const [user, setUser] = useState(undefined);
+  const [userImg, setUserImg] = useState(undefined);
+  const [isUploaded, setIsUploaded] = useState(false);
+  
 
+const setProfileImage = () => {
+  const fileInput = document.getElementById("upload-image");
 
-  const setProfileImage = () => {
-
+  if (fileInput.files.length > 0) {
+    const file = fileInput.files[0];
     const storageRef = REF(storage, `${props.userId}`);
+    
+    uploadBytes(storageRef, file)
+      .then((snapshot) => {
+        console.log(snapshot);
+      })
+      .catch((error) => {
+        // Handle upload error
+        console.error("Failed to upload image:", error);
+      });
+  } else {
+    // Handle case when no file is selected
+    console.error("No file selected.");
+                              
 
-    const file = document.getElementById("upload-image")
-    uploadBytes(storageRef, file).then((snapshot) => {
-    console.log(snapshot);
-});
+}}
 
-  }
+  
+
 
   const profileFunc = () => {
     setProfileHandler(prevState => !prevState);
@@ -51,6 +67,30 @@ const Header = (props) => {
       userListener();
     };
   }, [db, props.userId]);
+
+
+ 
+
+  const onclickFunc = async () => {
+    await setProfileImage();
+  
+    getDownloadURL(REF(storage, `${props.userId}`))
+      .then((url) => {
+       
+        setUserImg(url);
+        setIsUploaded(true);
+  
+        update(ref(db, 'Users/' + props.userId), {
+          photoURL: userImg,
+        });
+      })
+      .catch((error) => {
+        // Handle any errors
+      });
+  };
+  
+
+
 
   return (
     <div>
@@ -75,7 +115,7 @@ const Header = (props) => {
                   <span className='set-span'>Set Profile Image</span> 
                   <div className='set-img'>
                   <input type="file" id='upload-image' className='custom-file-input'/>
-                  <button onClick={setProfileImage} className='upload-btn'>Upload image</button>
+                  <button onClick={onclickFunc} className='upload-btn'>{!isUploaded ? "Upload image" : "Uploaded"}</button>
                   </div>
                   </div>
                   </div>

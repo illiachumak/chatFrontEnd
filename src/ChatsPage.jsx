@@ -5,7 +5,7 @@ import {SpeechConfig, SpeechRecognizer, AudioConfig} from "microsoft-cognitivese
 import "./ChatsPage.css";
 
 
-const socket = io("https://backend.persprojchat.space");
+const socket = io("http://localhost:3001")
 
 const ChatsPage = (props) => {
   const [message, setMessage] = useState("");
@@ -27,6 +27,7 @@ const ChatsPage = (props) => {
 
     socket.on("ROOM:JOINED", (users) => {
       setUsers(users);
+      console.log(users)
     });
 
     socket.on("MESSAGE:RECEIVED", (message) => {
@@ -120,7 +121,7 @@ const ChatsPage = (props) => {
         <ul>
           {users.map((user) => (
             <li key={user.username}>
-              <div className="user-avatar"></div>
+              <div  className="user-avatar"></div>
               <div className="user-info">
                 <div className="username">
                   {user.username || "Unknown User"}
