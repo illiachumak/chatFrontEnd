@@ -216,13 +216,12 @@
     
     
   }
-  .custom-file-input:hover::before {
+  
+  .custom-file-input:active::before {
+    background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
     border-color: black;
     content: 'File is selected';
-  }
-  .custom-file-input:active::before {
-    background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);}
-
+}
 .container-wrapper{
   height: 100%;
       display: flex;
