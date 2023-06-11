@@ -1,0 +1,231 @@
+*{
+    font-weight: 200;
+    font-family: "Roboto", sans-serif; 
+    color: #ffffff;
+}
+.header {
+  
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 30px;
+    background-color: rgb(13, 13, 30);
+    
+    
+    height: 5vh;
+  }
+  
+  .left {
+    font-size: 20px;
+    font-weight: bold;
+    cursor:default;
+  }
+  
+  .right {
+    font-weight: light;
+    font-size: 15px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    
+  }
+  .right:hover{
+    color: rgb(155, 155, 237);
+  }
+  .visible{
+    display: block;
+    opacity: 1;
+    transition: all 1s ease-out;
+  }
+  .unvisible{
+    display: none;
+    opacity: 0;
+    
+  }
+  
+ 
+  
+.profile-overlay{
+    position: absolute;
+    transition: all 1s ease-out;
+    background-color: rgba(0, 0, 0, 0.7);
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+}
+.profile-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    height: 600px;
+    background-color: rgb(17, 17, 39);
+    display: flex;
+    
+    z-index: 4;
+    border-radius: 20px;
+  }
+  .profile{
+    padding: 10%;
+    width: 100%;
+  }
+  .profile-container {
+    
+    display: flex;
+    
+    flex-direction: row;
+    color: white;
+    margin-bottom: 10%;
+    
+    
+  }
+  .data-wrapper{
+    justify-content: center;
+    margin-left: 20px ;
+    display: flex;
+    flex-direction: column;
+    
+  }
+  .username-profile{
+    font-size: 30px;
+    font-weight: 600;
+  }
+  .online-profile{
+    color:rgb(0, 255, 85);
+  }
+  
+  .email { 
+    margin: 0 auto;
+    
+   
+    padding: 7px 10px;
+    border:2px solid rgb(67, 67, 91);
+    border-radius: 10px; 
+  }
+
+  .email-label{
+    display: block;
+    margin-left: 10px;
+    margin-bottom: 5px;
+    font-size: small;
+    color:rgb(145, 145, 180);
+    font-weight: 500;
+  }
+  
+  .profile-button {
+    position: absolute;
+    top: 46%;
+    right: -60px;
+    width: 40px;
+    height: 40px;
+    background-color: rgb(17, 17, 39);
+    background-image: url("../assets/arrow.png");
+    background-size: 70%;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 5;
+    transition: right 0.3s ease-out;
+  }
+  
+  .profile-button:hover {
+    right: -65px;
+    background-color: rgb(38, 38, 92);
+  }
+  
+  .user-photo {
+    width: 130px;
+    height: 130px;
+     
+    background-image: url("https://i.imgur.com/uomkVIL.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 50%;
+  }
+
+  .upload-image{
+    width: 40%;
+  }
+
+  .upload-btn{
+    width: 50%;
+    height: 38.6px;
+    border: none;
+    border-radius: 8px;
+    color: #FFF;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    cursor: pointer;
+    border:2px solid rgb(67, 67, 91);
+  transition: all .44s ease;
+  -webkit-transition: all .44s ease;
+  -moz-transition: all .44s ease;
+  background-color: transparent;
+  padding: 0%;
+  }
+  .set-span{
+    display: block;
+    margin-bottom: 15px;
+
+    margin-left: 0px;
+    
+    font-size: medium;
+    color:rgb(255, 255, 255);
+    font-weight: 500;
+  }
+  .set-img{
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .custom-file-input::-webkit-file-upload-button {
+    visibility: hidden;
+  }
+  .custom-file-input::before {
+    content: 'Select image';
+    display: inline-block;
+    
+    padding: 13px 15px;
+    padding-top: 9px;
+    border-radius: 8px;
+    color: #FFF;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    cursor: pointer;
+    border:2px solid rgb(67, 67, 91);
+  transition: all .44s ease;
+  -webkit-transition: all .44s ease;
+  -moz-transition: all .44s ease;
+  background-color: transparent;
+    
+    
+    
+    
+    outline: none;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    user-select: none;
+    cursor: pointer;
+    
+    
+    
+  }
+  .custom-file-input:hover::before {
+    border-color: black;
+    content: 'File is selected';
+  }
+  .custom-file-input:active::before {
+    background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);}
+
+.container-wrapper{
+  height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+}

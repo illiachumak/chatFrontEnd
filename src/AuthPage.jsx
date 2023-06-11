@@ -1,7 +1,6 @@
 import React from "react";
 import axios from "axios";
-import { GoogleLogin } from "@react-oauth/google";
-import jwt_decode from "jwt-decode";
+import Header from "./components/Header"
 
 
 
@@ -11,40 +10,39 @@ import { initializeApp } from "firebase/app";
 
 import { getDatabase, set, ref, update, onValue } from "firebase/database";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup} from "firebase/auth";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBkTOrTblEMljuWYGB4kmm93M3c-rfvkd8",
-  authDomain: "persprojauth555.firebaseapp.com",
-  databaseURL: "https://persprojauth555-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "persprojauth555",
-  storageBucket: "persprojauth555.appspot.com",
-  messagingSenderId: "861020334162",
-  appId: "1:861020334162:web:9697c67eff12d7a34f978b",
-  measurementId: "G-KSY7V626QR"
-};
+import { firebaseConfig } from "./FirebaseConfig";
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const provider = new GoogleAuthProvider();
 const auth = getAuth();
- 
+   
 
 const AuthPage = (props) => {
 
-const onSubmitForm = (e) =>{
-  e.preventDefault();
-}
+  const [regisBtn, setRegisBtn] = React.useState(false)
+  const onClickRegisBtn = () =>{
+  if(regisBtn === false){ setRegisBtn(true)}
+  else{
+    setRegisBtn(false)
+  }
+  }
+
+
 
   // Sign in with google
   
-
+  
   const onClickGoogle = () => {
     let username;
     let roomId;
+    
     const getRoomId = async () => {
-      const roomId = await window.prompt("Enter Room Id", "RoomId");
+      const roomId = await window.prompt("Enter Room Id", "roomId");
       return roomId
       }
+
+      
 
     const signInGoogle = (roomId) =>{
       signInWithPopup(auth, provider)
@@ -101,6 +99,7 @@ getRoomId().then(roomId => {
 
 }
 
+
 /////////////////////////////////////////////
   
   const onSubmit2 = (e) => {
@@ -144,7 +143,7 @@ createUserWithEmailAndPassword(auth, email, password)
     const { value: password } = e.target[1];
     let roomId = await window.prompt("Enter Room Id", "roomId");
   
-    const auth = getAuth();
+    
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signing in
@@ -194,51 +193,69 @@ createUserWithEmailAndPassword(auth, email, password)
   
   
 
-return (
-  <div className="background">
-      <div className="form-container">
-      <div className="form-card">
-      <div className="or-span login-span">Sign In</div>
-        <form onSubmit={onSubmit} >
-          <div className="auth">
-            <div className="auth-label">Email</div>
-            <input className="auth-input" name="email" />
-          </div>
-          <div className="auth ">
-            <div className="auth-label ">Password</div>
-            <input className="auth-input " name="secret" />
-            <button className="auth-button" type="submit" >
-              Enter
-            </button>
-          </div>
-          
-        </form>
-      <div className="or-span">OR</div>
-      <button className="social-signin google" onClick={() => onClickGoogle()}>Sign in with Google</button>
-      </div> 
+  return (
+    <div className="wrapper">
       
-      <form onSubmit={onSubmit2} className="form-card">
-      <div className="or-span login-span">Sign Up</div>
-        <div className="auth reg">
-          <div className="auth-label">Email</div>
-          <input className="auth-input" name="email" />
-        </div>
-        <div className="auth reg">
-          <div className="auth-label">Username</div>
-          <input className="auth-input" name="username" />
-        </div>
-        <div className="auth reg">
-          <div className="auth-label reg-label">Password</div>
-          <input className="auth-input reg-input" name="secret" />
-          <button className="auth-button" type="submit">
-            Register
-          </button>
-        </div>
-      </form>
-    </div> 
+      <div className="background">
+        {!regisBtn ? (
+          <div className="form-container-wrapper">
+          <div className="form-container">
+            <div className="form-card">
+              <div className="or-span login-span">Sign In</div>
+              <form onSubmit={onSubmit}>
+                <div className="auth">
+                  <div className="auth-label">Email</div>
+                  <input className="auth-input" name="email" />
+                </div>
+                <div className="auth">
+                  <div className="auth-label">Password</div>
+                  <input className="auth-input" name="secret" />
+                  <button className="auth-button" type="submit">
+                    Login
+                  </button>
+                </div>
+              </form>
+              <div className="or-span">OR</div>
+              <button className="social-signin google" onClick={() => onClickGoogle()}>
+                Sign in with Google
+              </button>
+              <span className="regisBtn" onClick={() => onClickRegisBtn()}>
+                Do not have an account? Sign up.
+              </span>
+            </div>
+          </div>
+          </div>
+        ) : (
+             <div className="form-container-wrapper">         
+              <div className="form-container">
+              <form onSubmit={onSubmit2} className="form-card">
+              <div className="or-span login-span">Sign Up</div>
+              <div className="auth reg">
+              <div className="auth-label">Email</div>
+              <input className="auth-input" name="email" />
+              </div>
+              <div className="auth reg">
+              <div className="auth-label">Username</div>
+              <input className="auth-input" name="username" />
+              </div>
+              <div className="auth reg">
+              <div className="auth-label reg-label">Password</div>
+              <input className="auth-input reg-input" name="secret" />
+              <button className="auth-button reg-btn" type="submit">
+                Register
+             </button>
+             
+             </div>
+             <span className="regisBtn" onClick={() => onClickRegisBtn()}>
+                Already have an account? Sign in.
+              </span>
+             </form>
+             </div>
+             </div>
+        )}
+      </div>
+    </div>
     
-  </div>  
-  );
-};
+  )};
 
 export default AuthPage;

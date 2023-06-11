@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
-import {
-  SpeechConfig,
-  SpeechRecognizer,
-  AudioConfig,
-} from "microsoft-cognitiveservices-speech-sdk";
+import Header from "./components/Header"
+import {SpeechConfig, SpeechRecognizer, AudioConfig} from "microsoft-cognitiveservices-speech-sdk";
 import "./ChatsPage.css";
+
 
 const socket = io("https://backend.persprojchat.space");
 
@@ -15,8 +13,14 @@ const ChatsPage = (props) => {
   const [users, setUsers] = useState([]);
   const [recognizer, setRecognizer] = useState(null);
   const messagesEndRef = useRef(null);
+ 
+
+  
+ 
+  
 
   useEffect(() => {
+    console.log(props)
     socket.emit("USER:SET_USERNAME", props.user);
     socket.emit("USER:SET_USERID", props.userId);
     socket.emit("ROOM:JOIN", props.roomId);
@@ -102,7 +106,15 @@ const ChatsPage = (props) => {
  
 
   return (
+    <div className="wrapper">
+      
+    <Header
+    const userId = {props.userId}
+    />
+    
+       
     <div className="chats-container">
+      
       <div className="sidebar">
         <h3>Users in Chat</h3>
         <ul>
@@ -178,6 +190,7 @@ const ChatsPage = (props) => {
           <button type="submit" className="send-btn"></button>
         </form>
       </div>
+    </div>
     </div>
   );
 };
