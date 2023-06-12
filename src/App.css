@@ -188,3 +188,30 @@ body {
     margin-bottom: 10px;
   }
   
+
+  /* Media query for screens up to 768px */
+@media screen and (max-width: 768px) {
+  
+  
+  .form-container {
+    /* Modify form container styles for smaller screens */
+    max-width: 300px;
+  }
+
+  .or-span {
+    /* Modify or-span styles for smaller screens */
+    font-size: 22px;
+  }
+
+  /* Add any additional styles for smaller screens */
+}
+
+/* Media query for screens up to 480px */
+@media screen and (max-width: 480px) {
+  .form-container {
+    /* Modify form container styles for even smaller screens */
+    max-width: 250px;
+  }
+
+  /* Add any additional styles for even smaller screens */
+}
