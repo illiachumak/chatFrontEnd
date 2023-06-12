@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
-import Header from "./components/Header"
-import {SpeechConfig, SpeechRecognizer, AudioConfig} from "microsoft-cognitiveservices-speech-sdk";
+import Header from "./components/Header";
+import { SpeechConfig, SpeechRecognizer, AudioConfig } from "microsoft-cognitiveservices-speech-sdk";
 import "./ChatsPage.css";
 
-
-const socket = io("http://localhost:3001")
+const socket = io("https://backend.persprojchat.space");
 
 const ChatsPage = (props) => {
   const [message, setMessage] = useState("");
@@ -13,21 +12,14 @@ const ChatsPage = (props) => {
   const [users, setUsers] = useState([]);
   const [recognizer, setRecognizer] = useState(null);
   const messagesEndRef = useRef(null);
- 
-
-  
- 
-  
 
   useEffect(() => {
-    console.log(props)
     socket.emit("USER:SET_USERNAME", props.user);
     socket.emit("USER:SET_USERID", props.userId);
-    socket.emit("ROOM:JOIN", props.roomId);
+    socket.emit("ROOM:JOIN", props.roomId, props.photoURL);
 
     socket.on("ROOM:JOINED", (users) => {
       setUsers(users);
-      console.log(users)
     });
 
     socket.on("MESSAGE:RECEIVED", (message) => {
@@ -43,7 +35,7 @@ const ChatsPage = (props) => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -66,6 +58,7 @@ const ChatsPage = (props) => {
           hour: "2-digit",
           minute: "2-digit",
         }),
+        photoURL: props.photoURL, // Додано фото користувача
       };
       socket.emit("MESSAGE:SEND", newMessage);
       setMessage("");
@@ -104,94 +97,82 @@ const ChatsPage = (props) => {
     }
   };
 
- 
-
   return (
     <div className="wrapper">
-      
-    <Header
-    const userId = {props.userId}
-    />
-    
-       
-    <div className="chats-container">
-      
-      <div className="sidebar">
-        <h3>Users in Chat</h3>
-        <ul>
-          {users.map((user) => (
-            <li key={user.username}>
-              <div  className="user-avatar"></div>
-              <div className="user-info">
-                <div className="username">
-                  {user.username || "Unknown User"}
+      <Header userId={props.userId} 
+      photoURL = {props.photoURL} /> {/* Виправлено помилку в передачі пропсу */}
+      <div className="chats-container">
+        <div className="sidebar">
+          <h3>Users in Chat</h3>
+          <ul>
+            {users.map((user) => (
+              <li key={user.userId}>
+                <img className="user-avatar" src={user.photoURL} alt="User Avatar" />
+                <div className="user-info">
+                  <div className="username">{user.username || "Unknown User" }</div>
+                  <span className={`status-indicator ${user.status}`}></span>
                 </div>
-                <span className={`status-indicator ${user.status}`}></span>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="chat-area">
-        <div className="messages">
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className={`message ${
-                message.username === props.user ? "my-message" : ""
-              }`}
-            >
-              <div className="user-avatar"></div>
-              <div
-                className={`message-content ${
-                  message.username === props.user ? "my-message-content" : ""
-                }`}
-              >
-                <div
-                  className={` ${
-                    message.username === props.user ? "my-username" : "username"
-                  } `}
-                >
-                  {message.username}
-                </div>
-                <div
-                  className={` ${
-                    message.username === props.user ? "text my-text" : "text"
-                  } `}
-                >
-                  {message.text}
-                </div>
-                <div
-                  className={` ${
-                    message.username === props.user
-                      ? "my-message-timestamp"
-                      : "message-timestamp"
-                  } `}
-                >
-                  {message.timestamp}
-                </div>
-              </div>
-            </div>
-          ))}
-          <div ref={messagesEndRef} />
+              </li>
+            ))}
+          </ul>
         </div>
-        <form onSubmit={sendMessage} className="message-input">
-          <input
-            type="text"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Enter message..."
-          />
-          <button
-            type="button"
-            onClick={handleSpeechRecognition}
-            className={`microphone-icon ${recognizer ? "active" : ""}`}
-          ></button>
-          <button type="submit" className="send-btn"></button>
-        </form>
+        <div className="chat-area">
+          <div className="messages">
+            {messages.map((message, index) => (
+              <div
+                key={index}
+                className={`message ${message.username === props.user ? "my-message" : ""}`}
+              >
+                <img className="user-avatar" src={message.photoURL} alt="User Avatar" />
+                <div
+                  className={`message-content ${
+                    message.username === props.user ? "my-message-content" : ""
+                  }`}
+                >
+                  <div
+                    className={`${
+                      message.username === props.user ? "my-username" : "username"
+                    } `}
+                  >
+                    {message.username}
+                  </div>
+                  <div
+                    className={`${
+                      message.username === props.user ? "text my-text" : "text"
+                    } `}
+                  >
+                    {message.text}
+                  </div>
+                  <div
+                    className={`${
+                      message.username === props.user
+                        ? "my-message-timestamp"
+                        : "message-timestamp"
+                    } `}
+                  >
+                    {message.timestamp}
+                  </div>
+                </div>
+              </div>
+            ))}
+            <div ref={messagesEndRef} />
+          </div>
+          <form onSubmit={sendMessage} className="message-input">
+            <input
+              type="text"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Enter message..."
+            />
+            <button
+              type="button"
+              onClick={handleSpeechRecognition}
+              className={`microphone-icon ${recognizer ? "active" : ""}`}
+            ></button>
+            <button type="submit" className="send-btn"></button>
+          </form>
+        </div>
       </div>
-    </div>
     </div>
   );
 };

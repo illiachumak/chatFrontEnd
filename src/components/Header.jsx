@@ -74,20 +74,22 @@ const setProfileImage = () => {
   const onclickFunc = async () => {
     await setProfileImage();
   
-    getDownloadURL(REF(storage, `${props.userId}`))
-      .then((url) => {
-       
-        setUserImg(url);
-        setIsUploaded(true);
+    try {
+      const url = await getDownloadURL(REF(storage, `${props.userId}`));
+      console.log(url);
+      setUserImg(url);
   
-        update(ref(db, 'Users/' + props.userId), {
-          photoURL: userImg,
-        });
-      })
-      .catch((error) => {
-        // Handle any errors
-      });
+      await update(ref(db, 'Users/' + props.userId), {
+        photoURL: url,
+      }).then(console.log("updated")
+        );
+  
+      setIsUploaded(true);
+    } catch (error) {
+      console.error("Error updating photoURL:", error);
+    }
   };
+  
   
 
 
@@ -103,7 +105,7 @@ const setProfileImage = () => {
                     <div className="container-wrapper">
                       <div className="frst">
                     <div className="profile-container">
-                    <div className="user-photo"></div>
+                    <img className="user-photo" src = {props.photoURL}></img>
                     <div className='data-wrapper'>
                     <div className="username-profile">{user.username}</div>
                     <div className='online-profile'>Online</div></div>

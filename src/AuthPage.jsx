@@ -61,20 +61,25 @@ const AuthPage = (props) => {
     //reading username from db
           const userId = auth.currentUser.uid;
           onValue(ref(db, 'Users/' + userId), (snapshot) => {
-            const username = (snapshot.val() && snapshot.val().username) || 'Anonymous'
+            const username = snapshot.val().username;
+            const photoURL = snapshot.val().photoURL;
+            console.log(userId, snapshot, photoURL)
+            
+            
             
             axios
             .post(`https://${ip}/authenticate`, {
               username: username,
               roomId: roomId,
-              userId: userId,
+              photoURL: photoURL
             })
             .then((response) => {
               console.log(response.data)
               
                 props.onAuth(response.data);
                 props.roomId(roomId);
-                props.userID(user.uid)
+                props.userID(user.uid);
+                props.photoURL(photoURL)
              
             })
             .catch((error) => {
@@ -157,6 +162,11 @@ createUserWithEmailAndPassword(auth, email, password)
         onValue(ref(db, 'Users/' + user.uid), (snapshot) => {
           const username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
           const login = snapshot.val().login;
+          let photoURL = snapshot.val().photoURL 
+          if(!photoURL){
+            photoURL = "https://i.imgur.com/uomkVIL.png";
+          }
+          
           axios
             .post(`https://${ip}/authenticate`, {
               username: username,
@@ -171,6 +181,7 @@ createUserWithEmailAndPassword(auth, email, password)
                 props.onAuth(response.data);
                 props.roomId(roomId);
                 props.userID(user.uid);
+                props.photoURL(photoURL);
               }
               else{
                 alert("This User Has Been Already Connected!!!");
