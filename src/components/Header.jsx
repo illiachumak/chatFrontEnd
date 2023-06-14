@@ -145,11 +145,14 @@ const setProfileImage = () => {
         </a>
         <div className="right" onClick={navigateToAbout}>
           About
-        
+        </div>
         <button className="right" onClick={profileFunc}>
-          PROFILE
+          Profile
         </button>
-      </div>
+        <div className="right" onClick={navigateToHome}>
+          Sign Out
+        </div>
+      
       </div>
       </div>
     </div>
