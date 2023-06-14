@@ -68,7 +68,17 @@ const setProfileImage = () => {
     };
   }, [db, props.userId]);
 
+  const navigateToAbout = () => {
+    setAboutPage(true);
+    
+  };
 
+  const navigateToHome = () => {
+    setHomePage(true);
+    
+  };
+  if (aboutPage) {
+    return <Navigate to="/About"/>; }
  
 
   const onclickFunc = async () => {
@@ -128,10 +138,19 @@ const setProfileImage = () => {
         </div>
       </div>
       <div className="header">
-        <div className="left">persprojchat</div>
+      <div className="left" >persprojchat</div>
+        <div className='wrap'>
+        <a className="right" href='https://backend.persprojchat.space/api-docs'>
+          Swagger UI
+        </a>
+        <div className="right" onClick={navigateToAbout}>
+          About
+        
         <button className="right" onClick={profileFunc}>
           PROFILE
         </button>
+      </div>
+      </div>
       </div>
     </div>
   );
