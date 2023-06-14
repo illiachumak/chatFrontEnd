@@ -19,6 +19,8 @@ const Header = (props) => {
   const [user, setUser] = useState(undefined);
   const [userImg, setUserImg] = useState(undefined);
   const [isUploaded, setIsUploaded] = useState(false);
+  const [homePage, setHomePage] = useState(false);
+  const [aboutPage, setAboutPage] = useState(false);
   
 
 const setProfileImage = () => {
@@ -79,6 +81,9 @@ const setProfileImage = () => {
   };
   if (aboutPage) {
     return <Navigate to="/About"/>; }
+
+  if (homePage) {
+    return <Navigate to="/"/>; }
  
 
   const onclickFunc = async () => {
