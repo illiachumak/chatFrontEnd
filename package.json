@@ -16,6 +16,7 @@
     "microsoft-cognitiveservices-speech-sdk": "^1.29.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-router-dom": "^6.12.1",
     "socket.io-client": "^4.6.1"
   },
   "devDependencies": {

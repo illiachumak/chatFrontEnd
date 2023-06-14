@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-import Header from "./components/Header"
+import Header from "./components/HeaderAuth"
 
 
 
@@ -125,7 +125,8 @@ createUserWithEmailAndPassword(auth, email, password)
     })
     alert("User Created!");
 
-  })
+  }).then(() => {
+    onClickRegisBtn() })
   .catch((error) => {
     const errorCode = error.code;
     const errorMessage = error.message;
@@ -208,6 +209,7 @@ createUserWithEmailAndPassword(auth, email, password)
     <div className="wrapper">
       
       <div className="background">
+        <Header/>
         {!regisBtn ? (
           <div className="form-container-wrapper">
           <div className="form-container">

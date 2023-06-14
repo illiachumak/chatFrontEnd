@@ -4,7 +4,10 @@ import "./App.css";
 
 import AuthPage from "./AuthPage";
 import ChatsPage from "./ChatsPage";
-import { set } from "firebase/database";
+
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import About from "./pages/About"
+
 
 
 function App() {
@@ -29,8 +32,23 @@ function App() {
   }
 
   if (!user) {
-    return <AuthPage onAuth={handleAuth} roomId = {handleId} userID={handleUserId} photoURL={setPhotoURLFunc} />;
-  } 
+    return(
+      <div>
+        <Router>
+          <Routes>
+            <Route path="/" element={
+              
+              <AuthPage onAuth={handleAuth} roomId = {handleId} userID={handleUserId} photoURL={setPhotoURLFunc} />
+            }/>
+            
+            <Route path="/About" element={
+              <About/>
+            }/>
+    
+    </Routes>
+    </Router>
+    </div>
+  )} 
   
   else {
     return <ChatsPage user={user} roomId={id} userId={userId} photoURL={photoURL}/>;
