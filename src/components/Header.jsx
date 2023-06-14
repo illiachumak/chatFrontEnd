@@ -4,7 +4,7 @@ import { initializeApp } from "firebase/app";
 import { getDatabase, ref, onValue, update } from "firebase/database";
 import { firebaseConfig } from "../FirebaseConfig";
 import { getStorage, ref as REF, uploadBytes, getDownloadURL } from "firebase/storage";
-
+import { Navigate } from 'react-router-dom';
 
 
 
@@ -76,14 +76,14 @@ const setProfileImage = () => {
   };
 
   const navigateToHome = () => {
-    setHomePage(true);
+    location.reload()
+
     
   };
   if (aboutPage) {
     return <Navigate to="/About"/>; }
 
-  if (homePage) {
-    return <Navigate to="/"/>; }
+ 
  
 
   const onclickFunc = async () => {

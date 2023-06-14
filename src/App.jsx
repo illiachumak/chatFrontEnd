@@ -44,6 +44,10 @@ function App() {
             <Route path="/About" element={
               <About/>
             }/>
+             <Route path="/Chat" element={
+              
+              <ChatsPage user={user} roomId={id} userId={userId} photoURL={photoURL}/>
+            }/>
     
     </Routes>
     </Router>
@@ -51,7 +55,21 @@ function App() {
   )} 
   
   else {
-    return <ChatsPage user={user} roomId={id} userId={userId} photoURL={photoURL}/>;
+    return (
+      <Router>
+          <Routes>
+            <Route path="/" element={
+              
+              <ChatsPage user={user} roomId={id} userId={userId} photoURL={photoURL}/>
+            }/>
+            
+            <Route path="/About" element={
+              <About/>
+            }/>
+    
+    </Routes>
+    </Router>
+    )
   }
 }
 
